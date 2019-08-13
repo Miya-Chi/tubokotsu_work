@@ -1,42 +1,3 @@
-﻿<?php
-ini_set('display_errors',1);
-require_once('DBGoods.php');
-
-$dbGoods = new DBGoods();
-//更新処理
-if (isset($_POST['submitUpdate'])) {
-    $dbGoods->UpdateGoods();
-}
-//更新用フォーム要素の表示
-if (isset($_POST['update'])) {
-    //更新対象の値を取得
-    $dbGoodsId = $_POST['id'];
-    $dbGoodsName = $dbGoods->GoodsNameForUpdate($_POST['id']);
-    $Price = $dbGoods->PriceForUpdate($_POST['id']);
-    //クラスを記述することで表示/非表示を設定
-    $entryCss = "class='hideArea'";
-    $updateCss = "";
-} else {
-    $entryCss = "";
-    $updateCss = "class='hideArea'";
-}
-//削除処理
-if (isset($_POST['delete'])) {
-    $dbGoods->DeleteGoods($_POST['id']);
-}
-//新規登録処理
-if (isset($_POST['submitEntry'])) {
-    $errorMessages = $dbGoods->InsertGoods();
-}
-//テーブルデータの一覧表示
-$data = $dbGoods->SelectGoodsAll();
-$totalNumber = $dbGoods->getTotalNumber();
-$sorting = $_GET["sort"];
-
-//検索
-$search = $dbGoods->SearchGoods($_GET['name']);
-
-?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -120,10 +81,10 @@ $search = $dbGoods->SearchGoods($_GET['name']);
             <button type="submit" name="search">検索</button>
         </form>
         <?php echo $search;
-//        foreach ($search as $item){
-//            var_dump($item['GoodsID']);
-//        }
-//        var_dump($search);?>
+        //        foreach ($search as $item){
+        //            var_dump($item['GoodsID']);
+        //        }
+        //        var_dump($search);?>
     </div>
 </div>
 </body>

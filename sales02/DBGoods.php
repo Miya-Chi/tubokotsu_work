@@ -1,18 +1,11 @@
 <?php
 require_once('db.php');
-require('validation.php');
-$validation = new Validation();
 
+$db = new DB();
+$search = $db->Connectdb();
 
 class DBGoods extends DB
 {
-
-//        public function Execute()
-//    {
-//        // Execute SQL.
-//        $res = parent::executeSQL($sql, null);
-//        return $res;
-//    }
     //goodsテーブルのCRUD担当
     public function SelectGoodsAll()
     {
@@ -168,4 +161,33 @@ eof;
         $array = array($GoodsID);
         parent::executeSQL($sql, $array);
     }
+
+    public function SearchGoods($GoodsName)
+    {
+        $name = $_GET['name'];
+        $sql = "SELECT * FROM goods WHERE GoodsName LIKE '%{$name}%'";
+        $array = array($GoodsName);
+        $res = parent::executeSQL($sql, $array);
+        $search = "<table class='recordlist' id='goodsTable'>";
+        $search .= <<<eof
+        <tr>
+            <th>ID</th>
+            <th>商品名</th>
+            <th>単価</th>
+            <th></th>
+            <th></th>
+        </tr>
+eof;
+        foreach ($searchList = $res->fetchAll(PDO::FETCH_NUM) as $item) {
+            $search .= "<tr>";
+            for ($i = 0; $i < count($item); $i++) {
+                $search .= "<td>{$item[$i]}</td>";
+//                var_dump($search);
+            }
+                $searchList .= "</tr>\n";
+            $searchList .= "</table>\n";
+            }
+//        var_dump($search);die;
+            return $search;
+        }
 }
