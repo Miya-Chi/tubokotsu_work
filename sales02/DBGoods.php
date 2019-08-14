@@ -182,12 +182,10 @@ eof;
             $search .= "<tr>";
             for ($i = 0; $i < count($item); $i++) {
                 $search .= "<td>{$item[$i]}</td>";
-//                var_dump($search);
             }
                 $searchList .= "</tr>\n";
             $searchList .= "</table>\n";
             }
-//        var_dump($search);die;
             return $search;
         }
 }
