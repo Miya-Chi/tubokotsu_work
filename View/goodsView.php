@@ -1,11 +1,17 @@
 <?php
+require_once ('../Model/goodsModel.php');
 require_once('../Controller/goodsController.php');
 
-$entryCss
-$showErrorMessages
-$showDbGoodsId
-$showDbGoodsName
-$showPrice
+
+$dbGoods = new DBGoods02();
+$goodsList = new GoodsList();
+
+$insert = $goodsList->getInsertGoods();
+$search = $goodsList->getSearchGoods();
+$forUpdate = $goodsList->updateGoods();
+$errorMsgs = $goodsList->validateMessage();
+//var_dump($errorMsgs);die;
+$goodsList->getDeleteGoods();
 
 ?>
 <!DOCTYPE html>
@@ -31,7 +37,7 @@ $showPrice
     </ul>
 </div>
 <h1>商品マスター</h1>
-<div id="entry" <?php echo $entryCss; ?>>
+<div id="entry" <?php echo $forUpdate[3]; ?>>
     <form action="" method="post">
         <h2>新規登録</h2>
         <label><span class="entrylabel">ID</span><input type='text' name='GoodsID' size="10"></label>
@@ -42,19 +48,27 @@ $showPrice
 </div>
 <div style="color: red;">
     <?php
-    echo $showErrorMessages;
-//    var_dump($errorMessages);die;
+    if (!empty($errorMsgs))
+    {
+        $m = "";
+        foreach ($errorMsgs as $errorMsg) {
+            $m = $m.$errorMsg;
+        }
+        echo $m;
+    }
     ?>
 </div>
-<div id="update" <?php echo $updateCss; ?>>
+<div id="update" <?php echo $forUpdate[4];
+//var_dump($forUpdate[3]);die;
+?>>
     <form action="" method="post">
         <h2>更新</h2>
-        <p>GoodsID: <?php echo $showDbGoodsId; ?></p>
-        <input type="hidden" name="GoodsID" value="<?php echo $showDbGoodsId; ?>"/>
+        <p>GoodsID: <?php echo $forUpdate[0]; ?></p>
+        <input type="hidden" name="GoodsID" value="<?php echo $forUpdate[2]; ?>"/>
         <label><span class="entrylabel">商品名</span><input type='text' name='GoodsName'
-                                                         size="30" value="<?php echo $showDbGoodsName; ?>" required></label>
+                                                         size="30" value="<?php echo $forUpdate[1]; ?>" required></label>
         <label><span class="entrylabel">単価</span><input type='text' name='Price'
-                                                        size="10" value="<?php echo $showPrice; ?>" required></label>
+                                                        size="10" value="<?php echo $forUpdate[2]; ?>" required></label>
         <input type='submit' name='submitUpdate' value=' 　更新　 '>
     </form>
 </div>
@@ -62,19 +76,20 @@ $showPrice
 </div>
 <div>
     <!-- Total number of goods -->
-    <h4>Total: <?php echo $showTotalNumber; ?></h4>
+    <h4>Total: <?php echo $insert[1]; ?></h4>
 
     <!-- Goods table -->
     <?php
-    echo $data;
+    echo $insert[0];
+//    var_dump($data);die;
     ?>
     <br>
 
     <!-- Paging -->
     <?php
-    $pages = ceil($showTotalNumber / 5); // 総件数÷1ページに表示する件数 を切り上げたものが総ページ数
+    $pages = ceil($insert[1] / 5); // 総件数÷1ページに表示する件数 を切り上げたものが総ページ数
     for ($i = 1; $i <= $pages; $i++) {
-        printf("<a href='/tubokotsu/sales02/goods.php?sort=$sorting&page=%d'>%dページへ</a><br />\n", $i, $i);
+        printf("<a href='/tubokotsu/View/goodsView.php?sort=$insert[2]&page=%d'>%dページへ</a><br />\n", $i, $i);
     }
     ?>
     <br>

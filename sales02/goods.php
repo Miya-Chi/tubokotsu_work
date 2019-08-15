@@ -71,9 +71,11 @@ $search = $dbGoods->SearchGoods($_GET['name']);
 </div>
 <div style="color: red;">
     <?php
-    if (!empty($errorMessages)) {
+    if (!empty($errorMessages))
+    {
 
-        foreach ($errorMessages as $errorMessage) {
+        foreach ($errorMessages as $errorMessage)
+        {
             echo $errorMessage;
         }
     }

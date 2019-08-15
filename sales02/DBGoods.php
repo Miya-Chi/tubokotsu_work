@@ -118,18 +118,16 @@ eof;
             array_push($returnError, $errorMessages[2]);
         }
         if (!empty($returnError)) {
-//            var_dump($returnError);die;
             return $returnError;
         }
-//        var_dump($sql);die;
         parent:: executeSQL($sql, $array);
 
-        parent::executeSQL($sql, $array);
     }
 
     public function UpdateGoods()
     {
         $sql = "UPDATE Goods SET GoodsName=?, Price=? WHERE GoodsID=?";
+//        var_dump($sql);die;
         //array関数の引数の順番に注意する
         $array = array($_POST['GoodsName'], $_POST['Price'], $_POST['GoodsID']);
         parent::executeSQL($sql, $array);

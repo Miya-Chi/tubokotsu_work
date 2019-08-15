@@ -6,10 +6,13 @@ Class DBGoods02 extends DB
 {
     public $column;
     public $sort;
+    public $sortLink;
+    public $limit;
 
     const column = 'GoodsID';
     const sort = 'ASC';
     const sortLink = 'ASC';
+    const limit = 5;
 
 
     public function setSelectGoods()
@@ -18,9 +21,9 @@ Class DBGoods02 extends DB
             $this->column = self::column;
             $this->sort = self::sort;
             $this->sortLink = self::sortLink;
+            $this->limit = self::limit;
 
             //column別ソート
-            //        $column = 'GoodsID';
             switch ($_GET['column']) {
                 case "GoodsID":
                     $columnID = 'GoodsID';
@@ -47,35 +50,30 @@ Class DBGoods02 extends DB
                     break;
             }
         }
-
-        // LIMIT, OFFSET
-        if (!isset($_GET['page'])) {
-            $_GET['page'] = 1;
-        }
-        $limit = 5;
-        $offset = ($_GET['page'] - 1) * $limit;
-        $nowPage = $_GET['page'];
     }
+
 
     public function getSelectGoods()
     {
         $this->setSelectGoods();
         $this->limit;
-        $this->offset;
-        $this->nowPage;
+//
+        // LIMIT, OFFSET
+        if (!isset($_GET['page'])) {
+            $_GET['page'] = 1;
+        }
+        $offset = ($_GET['page'] - 1) * $this->limit;
+        $nowPage = $_GET['page'];
         // Execute SQL.
-        $sql = "SELECT * FROM goods ORDER BY {$this->column} {$this->sort} LIMIT {$this->limit} OFFSET {$this->offset}";
+        $sql = "SELECT * FROM goods ORDER BY {$this->column} {$this->sort} LIMIT {$this->limit} OFFSET {$offset}";
         $res = parent::executeSQL($sql, null);
         // Generate HTML.
-        $paramID = '?column=GoodsID&sort=' .$this->sortLink .'&page=' .$this->nowPage;
-        $paramGoodsName ='?column=GoodsName&sort=' .$this->sortLink .'&page=' .$this->nowPage;
         $data = "<table class='recordList' id='goodsTable'>";
 
         $data .= <<<eof
         <tr>
-            <th><a href="<?php $paramID ?>">ID</a></th>
-            <th><a href="<?php $paramGoodsName ?>">商品名</a></th>
-            <th>単価</th>
+        <th><a href="?column=GoodsID&sort=$this->sortLink&page=$nowPage">ID</a></th>
+        <th><a href="?column=GoodsName&sort=$this->sortLink&page=$nowPage">商品名</a></th>
             <th></th>
             <th></th>
         </tr>
@@ -86,14 +84,14 @@ eof;
                 $data .= "<td>{$row[$i]}</td>";
             }
             $data .= <<<eof
-              <td><form method='post' action=''>
+              <td><form method='post' action='../View/goodsView.php'>
               <input type='hidden' name='id' value='{$row[0]}'>
               <input type='submit' name='update' value='更新'>
               </form></td>
 eof;
             //削除ボタンのコード
             $data .= <<<eof
-              <td><form method='post' action=''>
+              <td><form method='post' action='../View/goodsView.php'>
               <input type='hidden' name='id' id='DeleteId' value='{$row[0]}'>
               <input type='submit' name='delete' id='delete' value='削除'
                onClick='return CheckDelete()'>
@@ -101,17 +99,9 @@ eof;
 eof;
             $data .= "</tr>\n";
         }
+
         $data .= "</table>\n";
         return $data;
-    }
-    public function showErrorMessages()
-    {
-        if (!empty($errorMessages)) {
-
-            foreach ($errorMessages as $errorMessage) {
-                echo $errorMessage;
-            }
-        }
     }
 
 
@@ -147,19 +137,24 @@ eof;
             array_push($returnError, $errorMessages[2]);
         }
         if (!empty($returnError)) {
-    //            var_dump($returnError);die;
             return $returnError;
         }
-    //        var_dump($sql);die;
         parent:: executeSQL($sql, $array);
     }
 
     public function setUpdateGoods()
     {
-        $sql = "UPDATE Goods SET GoodsName=?, Price=? WHERE GoodsID=?";
-        //array関数の引数の順番に注意する
-        $array = array($_POST['GoodsName'], $_POST['Price'], $_POST['GoodsID']);
-        parent::executeSQL($sql, $array);
+        try{
+            $sql = "UPDATE Goods SET GoodsName=?, Price=? WHERE GoodsID=?";
+            //array関数の引数の順番に注意する
+            $array = array($_POST['GoodsName'], $_POST['Price'], $_POST['GoodsID']);
+            parent::executeSQL($sql, $array);
+        } catch ( Exception $ex ) {
+            return false;
+            // 後続処理は中断
+        }
+
+
     }
 
     public function GoodsNameForUpdate($GoodsID)
@@ -182,7 +177,7 @@ eof;
         return $rows[0];
     }
 
-    public function getDeleteGoods($GoodsID)
+    public function setDeleteGoods($GoodsID)
     {
         $sql = "DELETE FROM goods WHERE GoodsID=?";
         $array = array($GoodsID);
