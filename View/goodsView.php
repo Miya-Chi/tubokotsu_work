@@ -2,13 +2,16 @@
 require_once ('../Model/goodsModel.php');
 require_once('../Controller/goodsController.php');
 
+$goodsList = new GoodsController();
 
-$dbGoods = new DBGoods02();
-$goodsList = new GoodsList();
+// 更新ボタンが押された場合
+if (isset($_POST['update'])) {
+    $forUpdate = $goodsList->updateGoods();
+}
 
 $insert = $goodsList->getInsertGoods();
 $search = $goodsList->getSearchGoods();
-$forUpdate = $goodsList->updateGoods();
+
 $errorMsgs = $goodsList->validateMessage();
 //var_dump($errorMsgs);die;
 $goodsList->getDeleteGoods();

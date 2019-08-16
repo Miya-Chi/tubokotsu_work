@@ -3,25 +3,29 @@ require_once('../Model/goodsModel.php');
 
 $dbGoods = new DBGoods02();
 
-Class GoodsList{
+Class GoodsController {
 
-    public $Price;
-    public function getUpdateGoods()
-    {
-        global $dbGoods;
-        //更新処理
-        if (isset($_POST['submitUpdate'])) {
-            $dbGoods->setUpdateGoods();
-        }
 
-    }
+//    public function getUpdateGoods()
+//    {
+//            var_dump($_POST['submitUpdate']);
+//        global $dbGoods;
+//        //更新処理
+//        if (isset($_POST['submitUpdate'])) {
+//            $dbGoods->setUpdateGoods();
+//        }
+//
+//    }
 
 
     public function updateGoods()
     {
         global $dbGoods;
-        $this->getUpdateGoods();
+        $dbGoods->setUpdateGoods();
         //更新用フォーム要素の表示
+        $dbGoodsId = $_POST[''];
+        $dbGoodsName = $_POST[''];
+        $Price = $_POST[''];
         if (isset($_POST['update'])) {
             //更新対象の値を取得
             $dbGoodsId = $_POST['id'];
@@ -54,6 +58,7 @@ Class GoodsList{
     {
         global $dbGoods;
 //        新規登録処理
+        $errorMessages = "";
         if (isset($_POST['submitEntry'])) {
             $errorMessages = $dbGoods->getInsertGoods();
         }

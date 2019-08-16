@@ -22,6 +22,7 @@ class DB
             if (!$pdo = $this->Connectdb()) return false;
             $stmt = $pdo->prepare($sql);
             $stmt->execute($array);
+            var_dump($stmt->queryString . '<br>');
             return $stmt;
         } catch (Exception $e) {
             return false;

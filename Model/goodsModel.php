@@ -84,10 +84,11 @@ eof;
                 $data .= "<td>{$row[$i]}</td>";
             }
             $data .= <<<eof
-              <td><form method='post' action='../View/goodsView.php'>
-              <input type='hidden' name='id' value='{$row[0]}'>
-              <input type='submit' name='update' value='更新'>
-              </form></td>
+              <td>
+                  <a href="/tubokotsu/View/goodsView.php?GoodsId={$row[0]}">
+                      <button>更新</button>
+                  </a>
+              </td>
 eof;
             //削除ボタンのコード
             $data .= <<<eof
@@ -145,16 +146,14 @@ eof;
     public function setUpdateGoods()
     {
         try{
-            $sql = "UPDATE Goods SET GoodsName=?, Price=? WHERE GoodsID=?";
+            $sql = "UPDATE goods SET GoodsName=?, Price=? WHERE GoodsID=?";
             //array関数の引数の順番に注意する
             $array = array($_POST['GoodsName'], $_POST['Price'], $_POST['GoodsID']);
             parent::executeSQL($sql, $array);
-        } catch ( Exception $ex ) {
+        } catch ( Exception $e ) {
             return false;
             // 後続処理は中断
         }
-
-
     }
 
     public function GoodsNameForUpdate($GoodsID)
